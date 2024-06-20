@@ -13,8 +13,8 @@ from langchain.embeddings import HuggingFaceEmbeddings
 from transformers import ViltProcessor, ViltForQuestionAnswering
 from PIL import Image
 
-processor = ViltProcessor.from_pretrained("dandelin/vilt-b32-finetuned-vqa")
-model = ViltForQuestionAnswering.from_pretrained("dandelin/vilt-b32-finetuned-vqa")
+#processor = ViltProcessor.from_pretrained("dandelin/vilt-b32-finetuned-vqa")
+#model = ViltForQuestionAnswering.from_pretrained("dandelin/vilt-b32-finetuned-vqa")
 
 st.set_page_config(page_title="Busqueda", page_icon=':shark:')
 '''
