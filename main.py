@@ -1,7 +1,7 @@
 import os
 import io
 import base64
-
+import streamlit as st
 from time import time
 from typing import List, Optional
 
@@ -16,6 +16,9 @@ from PIL import Image
 processor = ViltProcessor.from_pretrained("dandelin/vilt-b32-finetuned-vqa")
 model = ViltForQuestionAnswering.from_pretrained("dandelin/vilt-b32-finetuned-vqa")
 
+st.set_page_config(page_title="Busqueda", page_icon=':shark:')
+
+@st.cache_data
 def get_answer(imageBase64,text):
     try:
         image_bytes = base64.b64decode(imageBase64)
@@ -136,4 +139,14 @@ async def getResponse(InputConversation: InputJsonConversation):
         }
     return jsonOutputResponse
     '''
+def main():
+       st.write(
+        f"""
+        <div style="display: flex; align-items: center; margin-left: 0;">
+            <h1 style="display: inline-block;">Bienvenido a la página principal</h1>
+            <sup style="margin-left:5px;font-size:small; color: green;">version 0.1</sup>
+        </div>
+        """,
+        unsafe_allow_html=True,
+       )
     
