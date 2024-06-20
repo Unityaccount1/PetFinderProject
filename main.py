@@ -6,7 +6,7 @@ from time import time
 from typing import List, Optional
 
 from fastapi import FastAPI, HTTPException
-from fastapi.middleware.cors import CORSMiddleware
+#from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
 from langchain.embeddings import HuggingFaceEmbeddings
@@ -54,7 +54,7 @@ class OutputJsonUploadImage(InputJsonConversation):
 
 app = FastAPI()
 #os.environ["HUGGINGFACEHUB_API_TOKEN"] = "HUGGINGFACEHUB_API_TOKEN"
-
+'''
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -62,7 +62,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
+'''
 jsonObjectImages=[]
 
 @app.middleware("http")
