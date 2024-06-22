@@ -2,35 +2,44 @@ import streamlit as st
 import numpy as np
 import tensorflow as tf
 from PIL import Image
-from tensorflow.keras.applications.vgg16 import VGG16, preprocess_input
+from tensorflow.keras.applications.vgg16 import VGG16, preprocess_input, decode_predictions
 from tensorflow.keras.preprocessing import image
 import requests
 
-# Load the pre-trained VGG16 model
-vgg_model = VGG16(weights='imagenet', include_top=False)
+# Load the pre-trained VGG16 model with top layers
+vgg_model = VGG16(weights='imagenet')
 
-# Function to extract features using VGG16
-def extract_vgg_features(img):
+# Function to classify the image using VGG16
+def classify_image(img):
     # Load and preprocess the image
     img_array = image.img_to_array(img)
     img_array = np.expand_dims(img_array, axis=0)
     img_array = preprocess_input(img_array)
-    # Extract features
-    features = vgg_model.predict(img_array)
-    return features.flatten() # Flatten the feature tensor into a 1D array
+    # Classify the image
+    predictions = vgg_model.predict(img_array)
+    return decode_predictions(predictions, top=3)[0]  # Decode top 3 predictions
 
 # Streamlit application
-st.title("VGG16 Feature Extraction")
+st.title("Animal Image Classification using VGG16")
 
 # URL input
-url = st.text_input("Enter image URL", "http://images.cocodataset.org/val2017/000000039769.jpg")
+url = st.text_input("Enter image URL of an animal", "http://images.cocodataset.org/val2017/000000039769.jpg")
 
 if url:
     try:
+        # Load the image from the URL
         img = Image.open(requests.get(url, stream=True).raw)
+        
+        # Display the input image
         st.image(img, caption="Input Image", use_column_width=True)
-        features = extract_vgg_features(img)
-        st.write("Extracted Features:")
-        st.write(features)
+        
+        # Classify the image and get the top 3 predictions
+        predictions = classify_image(img)
+        
+        # Display the predictions
+        st.subheader("Top 3 Predictions")
+        for i, (imagenet_id, label, score) in enumerate(predictions):
+            st.write(f"{i+1}. {label}: {score:.4f}")
+        
     except Exception as e:
         st.error(f"Error loading image: {e}")
