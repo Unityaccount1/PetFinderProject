@@ -2,27 +2,27 @@ import streamlit as st
 import numpy as np
 import tensorflow as tf
 from PIL import Image
-from tensorflow.keras.applications.vgg16 import VGG16, preprocess_input, decode_predictions
+from tensorflow.keras.applications import EfficientNetB0, preprocess_input, decode_predictions
 from tensorflow.keras.preprocessing import image
 import requests
 
-# Load the pre-trained VGG16 model with top layers
-vgg_model = VGG16(weights='imagenet')
+# Load the pre-trained EfficientNetB0 model with top layers
+efficientnet_model = EfficientNetB0(weights='imagenet')
 
-# Function to classify the image using VGG16
+# Function to classify the image using EfficientNetB0
 def classify_image(img):
-    # Resize the image to 224x224 pixels as expected by VGG16
+    # Resize the image to 224x224 pixels as expected by EfficientNetB0
     img = img.resize((224, 224))
     # Convert the image to an array and preprocess it
     img_array = image.img_to_array(img)
     img_array = np.expand_dims(img_array, axis=0)
     img_array = preprocess_input(img_array)
     # Classify the image
-    predictions = vgg_model.predict(img_array)
+    predictions = efficientnet_model.predict(img_array)
     return decode_predictions(predictions, top=3)[0]  # Decode top 3 predictions
 
 # Streamlit application
-st.title("Animal Image Classification using VGG16")
+st.title("Animal Image Classification using EfficientNetB0")
 
 # URL input
 url = st.text_input("Enter image URL of an animal", "http://images.cocodataset.org/val2017/000000039769.jpg")
