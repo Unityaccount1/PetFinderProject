@@ -5,3 +5,4 @@ streamlit==1.21.0
 tensorflow==2.15.1
 transformers==4.28.1
 torch==1.13.1
+sentencepiece==0.1.96
