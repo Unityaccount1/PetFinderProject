@@ -22,7 +22,11 @@ def classify_image(img):
     # Classify the image
     predictions = efficientnet_model.predict(img_array)
     return decode_predictions(predictions, top=3)[0]  # Decode top 3 predictions
-
+# Función para decodificar una imagen en base64
+def decodificar_imagen_base64(base64_str):
+    image_data = base64.b64decode(base64_str)
+    image = Image.open(BytesIO(image_data))
+    return image
 # Streamlit application
 st.title("Animal Image Classification using EfficientNetB0")
 
