@@ -5,7 +5,7 @@ from PIL import Image
 from tensorflow.keras.applications.efficientnet import EfficientNetB0, preprocess_input, decode_predictions
 from tensorflow.keras.preprocessing import image
 import requests
-from transformers import MarianMTModel, MarianTokenizer
+from transformers import M2M100ForConditionalGeneration, M2M100Tokenizer
 import base64
 from io import BytesIO
 
@@ -13,9 +13,9 @@ from io import BytesIO
 efficientnet_model = EfficientNetB0(weights='imagenet')
 
 # Cargar el modelo y el tokenizador para la traducción
-translation_model_name = 'Helsinki-NLP/opus-mt-en-es'
-translation_model = MarianMTModel.from_pretrained(translation_model_name)
-translation_tokenizer = MarianTokenizer.from_pretrained(translation_model_name)
+translation_model_name = 'facebook/m2m100_418M'
+translation_model = M2M100ForConditionalGeneration.from_pretrained(translation_model_name)
+translation_tokenizer = M2M100Tokenizer.from_pretrained(translation_model_name)
 
 # Función para clasificar la imagen usando EfficientNetB0
 def classify_image(img):
@@ -31,9 +31,11 @@ def classify_image(img):
 
 # Función para traducir texto al español
 def traducir_texto(texto):
-    inputs = translation_tokenizer([texto], return_tensors="pt", truncation=True)
-    translated_tokens = translation_model.generate(**inputs)
-    traduccion = translation_tokenizer.batch_decode(translated_tokens, skip_special_tokens=True)
+    # Preprocesar y traducir el texto
+    translation_tokenizer.src_lang = "en"
+    inputs = translation_tokenizer(texto, return_tensors="pt", truncation=True)
+    generated_tokens = translation_model.generate(**inputs, forced_bos_token_id=translation_tokenizer.get_lang_id("es"))
+    traduccion = translation_tokenizer.batch_decode(generated_tokens, skip_special_tokens=True)
     return traduccion[0]
 
 # Función para decodificar una imagen en base64
