@@ -25,9 +25,9 @@ def obtener_prediccion_vilt(img, pregunta):
     st.write("Predicción realizada.")
     
     # Obtener la respuesta más probable
-    respuesta_id = torch.argmax(outputs.logits, dim=-1)
-    respuesta = processor.tokenizer.decode(respuesta_id.squeeze().tolist())
-    return respuesta
+    respuesta_ids = outputs.logits.argmax(dim=-1)
+    respuestas = processor.batch_decode(respuesta_ids, skip_special_tokens=True)
+    return respuestas[0]
 
 # Aplicación de Streamlit
 st.title("Clasificación de Animales y Acciones usando ViLT")
