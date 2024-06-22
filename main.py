@@ -29,6 +29,6 @@ def main():
             <sup style="margin-left:5px;font-size:small; color: green;">version 0.1</sup>
         </div>
         """,unsafe_allow_html=True,)
-    st.write(features)
+    st.write("Salida:" + features)
 if __name__ == "__main__":
     main()
