@@ -1,9 +1,4 @@
-fastapi==0.85.0
-uvicorn==0.18.3
-langchain==0.0.144
-huggingface_hub==0.19.3
-sentence_transformers==2.2.2
-transformers
-torch
-Pillow
-python-multipart
+numpy
+tensorflow
+streamlit
+requests
