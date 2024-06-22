@@ -31,7 +31,7 @@ def classify_image(img):
 
 # Función para traducir texto al español
 def traducir_texto(texto):
-    inputs = translation_tokenizer(texto, return_tensors="pt", truncation=True)
+    inputs = translation_tokenizer([texto], return_tensors="pt", truncation=True)
     translated_tokens = translation_model.generate(**inputs)
     traduccion = translation_tokenizer.batch_decode(translated_tokens, skip_special_tokens=True)
     return traduccion[0]
