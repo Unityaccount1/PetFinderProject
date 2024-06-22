@@ -22,12 +22,11 @@ def obtener_prediccion_vilt(img, pregunta):
     # Obtener la predicción
     with torch.no_grad():
         outputs = model(**inputs)
-    
     st.write("Predicción realizada.")
     
     # Obtener la respuesta más probable
-    respuesta_id = outputs.logits.argmax(-1).item()
-    respuesta = processor.tokenizer.decode([respuesta_id])
+    respuesta_id = torch.argmax(outputs.logits, dim=-1)
+    respuesta = processor.tokenizer.decode(respuesta_id.squeeze().tolist())
     return respuesta
 
 # Aplicación de Streamlit
