@@ -1,4 +1,4 @@
-tensorflow
-numpy==1.23.5
-streamlit
-requests
+numpy==1.21.6
+tensorflow==2.13.0
+Pillow==9.4.0
+requests==2.31.0
