@@ -11,7 +11,9 @@ vgg_model = VGG16(weights='imagenet')
 
 # Function to classify the image using VGG16
 def classify_image(img):
-    # Load and preprocess the image
+    # Resize the image to 224x224 pixels as expected by VGG16
+    img = img.resize((224, 224))
+    # Convert the image to an array and preprocess it
     img_array = image.img_to_array(img)
     img_array = np.expand_dims(img_array, axis=0)
     img_array = preprocess_input(img_array)
