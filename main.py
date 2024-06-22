@@ -2,7 +2,7 @@ import streamlit as st
 import numpy as np
 import tensorflow as tf
 from PIL import Image
-from tensorflow.keras.applications import EfficientNetB0, preprocess_input, decode_predictions
+from tensorflow.keras.applications.efficientnet import EfficientNetB0, preprocess_input, decode_predictions
 from tensorflow.keras.preprocessing import image
 import requests
 
