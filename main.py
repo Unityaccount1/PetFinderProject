@@ -4,6 +4,8 @@ from PIL import Image
 import requests
 from transformers import ViltProcessor, ViltForQuestionAnswering
 import torch
+import base64
+from io import BytesIO
 
 # Cargar el modelo y el procesador de ViLT solo una vez
 st.write("Cargando el modelo y el procesador de ViLT...")
@@ -25,24 +27,49 @@ def obtener_prediccion_vilt(img, pregunta):
     st.write("Predicción realizada.")
     
     # Obtener la respuesta más probable
-    respuesta_ids = outputs.logits.argmax(dim=-1)
-    respuestas = processor.batch_decode(respuesta_ids, skip_special_tokens=True)
-    return respuestas[0]
+    respuesta_ids = outputs.logits.argmax(dim=-1).item()
+    respuesta = processor.tokenizer.decode(respuesta_ids)
+    
+    # Filtrar la respuesta para asegurar que no contiene tokens no usados
+    respuesta = respuesta.replace('[UNK]', '').replace('[PAD]', '').strip()
+    
+    return respuesta
+
+# Función para decodificar una imagen en base64
+def decodificar_imagen_base64(base64_str):
+    image_data = base64.b64decode(base64_str)
+    image = Image.open(BytesIO(image_data))
+    return image
 
 # Aplicación de Streamlit
 st.title("Clasificación de Animales y Acciones usando ViLT")
 
-# Entrada de URL
-url = st.text_input("Ingresa la URL de la imagen de un animal", "http://images.cocodataset.org/val2017/000000039769.jpg")
+# Entrada de URL o Base64
+opcion = st.selectbox("Selecciona el tipo de entrada", ["URL", "Base64"])
+if opcion == "URL":
+    url = st.text_input("Ingresa la URL de la imagen de un animal", "http://images.cocodataset.org/val2017/000000039769.jpg")
+    if url:
+        try:
+            st.write("Cargando la imagen desde la URL...")
+            img = Image.open(requests.get(url, stream=True).raw)
+            st.write("Imagen cargada.")
+        except Exception as e:
+            st.error(f"Error al cargar la imagen: {e}")
+else:
+    base64_str = st.text_area("Ingresa la cadena en Base64 de la imagen")
+    if base64_str:
+        try:
+            st.write("Decodificando la imagen desde Base64...")
+            img = decodificar_imagen_base64(base64_str)
+            st.write("Imagen decodificada.")
+        except Exception as e:
+            st.error(f"Error al decodificar la imagen: {e}")
+
+# Pregunta sobre la imagen
 pregunta = st.text_input("Ingresa una pregunta sobre la imagen", "¿Qué está haciendo el animal?")
 
-if url and pregunta:
+if 'img' in locals() and pregunta:
     try:
-        st.write("Cargando la imagen desde la URL...")
-        # Cargar la imagen desde la URL
-        img = Image.open(requests.get(url, stream=True).raw)
-        st.write("Imagen cargada.")
-        
         # Mostrar la imagen de entrada
         st.image(img, caption="Imagen de Entrada", use_column_width=True)
         
@@ -54,4 +81,4 @@ if url and pregunta:
         st.write(f"Respuesta: {respuesta}")
         
     except Exception as e:
-        st.error(f"Error al cargar la imagen: {e}")
+        st.error(f"Error al procesar la imagen: {e}")
