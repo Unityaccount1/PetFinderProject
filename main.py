@@ -24,13 +24,28 @@ def classify_image(img):
 # Streamlit application
 st.title("Animal Image Classification using EfficientNetB0")
 
-# URL input
-url = st.text_input("Enter image URL of an animal", "http://images.cocodataset.org/val2017/000000039769.jpg")
+# Entrada de URL o Base64
+opcion = st.selectbox("Selecciona el tipo de entrada", ["URL", "Base64"])
+if opcion == "URL":
+    url = st.text_input("Ingresa la URL de la imagen de un animal", "http://images.cocodataset.org/val2017/000000039769.jpg")
+    if url:
+        try:
+            img = Image.open(requests.get(url, stream=True).raw)
+        except Exception as e:
+            st.error(f"Error al cargar la imagen: {e}")
+else:
+    base64_str = st.text_area("Ingresa la cadena en Base64 de la imagen")
+    if base64_str:
+        try:
+            img = decodificar_imagen_base64(base64_str)
+        except Exception as e:
+            st.error(f"Error al decodificar la imagen: {e}")
 
-if url:
+if 'img' in locals():
+    
     try:
         # Load the image from the URL
-        img = Image.open(requests.get(url, stream=True).raw)
+        #img = Image.open(requests.get(url, stream=True).raw)
         
         # Display the input image
         st.image(img, caption="Input Image", use_column_width=True)
