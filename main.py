@@ -5,6 +5,8 @@ from PIL import Image
 from tensorflow.keras.applications.efficientnet import EfficientNetB0, preprocess_input, decode_predictions
 from tensorflow.keras.preprocessing import image
 import requests
+import base64
+from io import BytesIO
 
 # Load the pre-trained EfficientNetB0 model with top layers
 efficientnet_model = EfficientNetB0(weights='imagenet')
